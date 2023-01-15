@@ -1,0 +1,41 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+@if (!User.Identity.IsAuthenticated)
+{
+
+
+    <div class="jumbotron">
+        <h1>Hotel Più o Meno</h1>
+        <p><a href="../Utenti/SignIn" class="btn btn-primary btn-lg">Log In &raquo;</a></p>
+    </div>
+
+}
+else
+{
+    <div class="jumbotron">
+        <h1>Hotel Più o Meno</h1>
+        <p><a href="../Utenti/SignOut" class="btn btn-primary btn-lg">Log Out &raquo;</a></p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <h2>Lista Clienti</h2>
+            <p><a class="btn btn-default" href="../Clienti/ListaClienti">Lista Clienti</a></p>
+        </div>
+        <div class="col-md-3">
+            <h2>Lista Prenotazioni</h2>
+            <p><a class="btn btn-default" href="../Prenotazioni/ListaPrenotazioni">Lista Prenotazioni</a></p>
+        </div>
+        <div class="col-md-3">
+            <h2>Aggiungi</h2>
+            <p><a class="btn btn-default" href="../Prenotazioni/AggiungiPrenotazioni">Aggiungi Prenotazione</a></p>
+        </div>
+        <div class="col-md-3">
+            <h2>Ricerca</h2>
+            <p><a class="btn btn-default" href="">Ricerca</a></p>
+        </div>
+    </div>
+}
+

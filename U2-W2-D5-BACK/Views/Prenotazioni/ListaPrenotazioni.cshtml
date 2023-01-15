@@ -1,0 +1,79 @@
+﻿@model IEnumerable<U2_W2_D5_BACK.Models.Prenotazione>
+
+@{
+    ViewBag.Title = "ListaPrenotazioni";
+}
+
+<h2>ListaPrenotazioni</h2>
+
+<p>
+    @Html.ActionLink("Aggiungi", "AggiungiPrenotazioni")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Cliente)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Camera)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Soggiorno)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DataPrenotazione)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DataInizio)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DataFine)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Caparra)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Totale)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Cliente.Nome)
+            @Html.DisplayFor(modelItem => item.Cliente.Cognome)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Camera.NumeroCamera)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Soggiorno.TipoSoggiorno)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DataPrenotazione)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DataInizio)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DataFine)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Caparra)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Totale)
+        </td>
+        <td>
+            @Html.ActionLink("Modifica", "ModificaPrenotazioni", new { id = item.ID }) |
+            @Html.ActionLink("Elimina", "EliminaPrenotazioni", new { id = item.ID }) |
+            @Html.ActionLink("Check Out", "CheckOut", new { id = item.ID }) |
+            @Html.ActionLink("Servizi", "ListaServizi", new { id = item.ID }) 
+
+        </td>
+
+</tr>
+}
+
+</table>
