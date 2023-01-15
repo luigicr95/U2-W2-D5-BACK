@@ -8,6 +8,7 @@ using U2_W2_D5_BACK.Models;
 
 namespace U2_W2_D5_BACK.Controllers
 {
+    [Authorize]
     public class ClientiController : Controller
     {
         // GET: Clienti

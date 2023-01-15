@@ -130,6 +130,7 @@
     <Compile Include="Models\Camera.cs" />
     <Compile Include="Models\Cliente.cs" />
     <Compile Include="Models\Connessione.cs" />
+    <Compile Include="Models\ContoTotale.cs" />
     <Compile Include="Models\Prenotazione.cs" />
     <Compile Include="Models\ServizioAggiuntivo.cs" />
     <Compile Include="Models\Soggiorno.cs" />
@@ -176,6 +177,9 @@
     <Content Include="Views\Prenotazioni\AggiungiPrenotazioni.cshtml" />
     <Content Include="Views\Prenotazioni\ModificaPrenotazioni.cshtml" />
     <Content Include="Views\Prenotazioni\ListaServizi.cshtml" />
+    <Content Include="Views\Prenotazioni\AggiungiServizi.cshtml" />
+    <Content Include="Views\Prenotazioni\CheckOut.cshtml" />
+    <Content Include="Views\Prenotazioni\PrenotazioniPerCliente.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

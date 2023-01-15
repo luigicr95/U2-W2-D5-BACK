@@ -1,0 +1,68 @@
+﻿
+@{
+    ViewBag.Title = "PrenotazioniPerCliente";
+}
+
+<h2>PrenotazioniPerCliente</h2>
+
+<p>Ricerca Prenotazioni per Codice Fiscale</p>
+<input type="text" id="CF" />
+<input type="button" id="Ricerca" value="Ricerca" />
+
+
+<ul id="ListaPrenotazioni">
+</ul>
+
+
+<p>Ricerca Prenotazioni con Pensione Completa</p>
+<input type="button" id="CercaPensioni" value="Ricerca" />
+
+
+<ul id="ListaPrenotazioniPensioni">
+</ul>
+
+
+<script type="text/javascript">
+
+
+
+    $(document).ready(function () {
+
+        $("#Ricerca").click(function () {
+            var CodiceFiscale = $('#CF').val();
+            $('#ListaPrenotazioni li').remove();
+            $.ajax({
+                method: 'GET',
+                data: { 'CF': CodiceFiscale },
+                url: 'GetPrenotazioni',
+                success: function (prenotazioni) {
+                    $.each(prenotazioni, function (index, valore) {
+                        $("#ListaPrenotazioni").append("<li> Prenotazione: " + valore.ID + " Cliente: " + valore.Cliente.Nome + " " + valore.Cliente.Cognome + "</li>");
+                    })
+                }
+            });
+        })
+    })
+
+    $(document).ready(function () {
+
+        $("#CercaPensioni").click(function () {
+ 
+            $('#ListaPrenotazioniPensioni li').remove();
+            $.ajax({
+                method: 'GET',
+                data: { 'Pensione': 2 },
+                url: 'GetPrenotazioniPensione',
+                success: function (prenotazioni) {
+                    $.each(prenotazioni, function (index, valore) {
+                        $("#ListaPrenotazioniPensioni").append("<li> Prenotazione: " + valore.ID + " Cliente: " + valore.Cliente.Nome + " " + valore.Cliente.Cognome +  " Tipo Soggiorno:  " + valore.Soggiorno.TipoSoggiorno + "</li>");
+                    })
+                }
+            });
+        })
+    })
+
+
+
+
+</script>

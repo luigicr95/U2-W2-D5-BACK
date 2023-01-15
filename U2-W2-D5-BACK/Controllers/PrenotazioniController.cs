@@ -8,6 +8,7 @@ using U2_W2_D5_BACK.Models;
 
 namespace U2_W2_D5_BACK.Controllers
 {
+    [Authorize]
     public class PrenotazioniController : Controller
     {
         // GET: Prenotazioni
@@ -212,6 +213,150 @@ namespace U2_W2_D5_BACK.Controllers
             
             
             return View(ServizioAggiuntivo.listaServizi);
+        }
+
+        public ActionResult AggiungiServizi()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult AggiungiServizi(ServizioAggiuntivo servizio, int id)
+        {
+            SqlConnection con = Connessione.GetConnectionDB();
+            try
+            {
+                con.Open();
+                SqlCommand command = new SqlCommand("INSERT INTO ServiziAggiuntivi VALUES (@DescrizioneServizio, @CostoServizio, @DataServizio, @IDPrenotazione)", con);
+                command.Parameters.AddWithValue("@DescrizioneServizio", servizio.DescrizioneServizio);
+                command.Parameters.AddWithValue("@CostoServizio", servizio.CostoServizio);
+                command.Parameters.AddWithValue("@DataServizio", servizio.DataServizio);
+                command.Parameters.AddWithValue("@IDPrenotazione", id);
+
+                command.ExecuteNonQuery();
+
+
+            }catch(Exception ex)
+            {
+
+            }
+            con.Close();
+            
+            return View();
+        }
+
+        public ActionResult CheckOut(int id)
+        {
+            ContoTotale.listaConto.Clear();
+            SqlConnection con = Connessione.GetConnectionDB();
+            try
+            {
+                con.Open();
+                SqlCommand command = new SqlCommand("SELECT SUM(CostoServizio) AS TotaleServizi, Totale, Caparra FROM ServiziAggiuntivi INNER JOIN Prenotazioni ON ServiziAggiuntivi.IDPrenotazione = Prenotazioni.IDPrenotazione WHERE ServiziAggiuntivi.IDPrenotazione = @IDPrenotazione GROUP BY Totale, Caparra", con);
+                command.Parameters.AddWithValue("@IDPrenotazione", id);
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    ContoTotale conto = new ContoTotale();
+                    conto.TotaleServizi = Convert.ToDecimal(reader["TotaleServizi"]);
+                    conto.CaparraVersata = Convert.ToDecimal(reader["Caparra"]);
+                    conto.TotalePrenotazione = Convert.ToDecimal(reader["Totale"]);
+                    conto.TotaleEffettivo = conto.TotaleServizi + conto.TotalePrenotazione - conto.CaparraVersata;
+                    
+                    ContoTotale.listaConto.Add(conto);
+                }
+            }catch (Exception ex)
+            {
+
+            }
+            con.Close();
+            
+            return View(ContoTotale.listaConto);
+        }
+
+        public ActionResult PrenotazioniPerCliente()
+        {
+            return View();
+        }
+
+        public JsonResult GetPrenotazioni(string CF)
+        {
+            Prenotazione.listaPrenotazioni.Clear();
+            SqlConnection con = Connessione.GetConnectionDB();
+            try
+            {
+                con.Open();
+                SqlCommand command = new SqlCommand("SELECT * FROM Prenotazioni INNER JOIN Clienti ON Prenotazioni.IDCliente = Clienti.IDCliente WHERE CodiceFiscale = @CodiceFiscale", con);
+                command.Parameters.AddWithValue("@CodiceFiscale", CF);
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    Prenotazione prenotazione = new Prenotazione();
+                    Cliente clienti = new Cliente();
+                    clienti.IDCliente = Convert.ToInt32(reader["IDCliente"]);
+                    clienti.Nome = reader["Nome"].ToString();
+                    clienti.Cognome = reader["Cognome"].ToString();
+                    clienti.CodiceFiscale = reader["CodiceFiscale"].ToString();
+                    prenotazione.ID = Convert.ToInt32(reader["IDPrenotazione"]);
+                    prenotazione.DataPrenotazione = Convert.ToDateTime(reader["DataPrenotazione"]);
+
+                    prenotazione.Cliente = clienti;
+
+
+
+                    Prenotazione.listaPrenotazioni.Add(prenotazione);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            con.Close();
+
+
+            return Json(Prenotazione.listaPrenotazioni, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetPrenotazioniPensione(int Pensione)
+        {
+            Prenotazione.listaPrenotazioni.Clear();
+            SqlConnection con = Connessione.GetConnectionDB();
+            try
+            {
+                con.Open();
+                SqlCommand command = new SqlCommand("SELECT * FROM Prenotazioni INNER JOIN Clienti ON Prenotazioni.IDCliente = Clienti.IDCliente INNER JOIN Soggiorni ON Prenotazioni.IDSoggiorno = Soggiorni.IDSoggiorno WHERE Prenotazioni.IDSoggiorno = @IDSoggiorno", con);
+                command.Parameters.AddWithValue("@IDSoggiorno", Pensione);
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    Prenotazione prenotazione = new Prenotazione();
+                    Cliente clienti = new Cliente();
+                    clienti.IDCliente = Convert.ToInt32(reader["IDCliente"]);
+                    clienti.Nome = reader["Nome"].ToString();
+                    clienti.Cognome = reader["Cognome"].ToString();
+                    clienti.CodiceFiscale = reader["CodiceFiscale"].ToString();
+                    Soggiorno soggiorno = new Soggiorno();
+                    soggiorno.IDSoggiorno = Convert.ToInt32(reader["IDSoggiorno"]);
+                    soggiorno.TipoSoggiorno = reader["TipoSoggiorno"].ToString();
+                    prenotazione.ID = Convert.ToInt32(reader["IDPrenotazione"]);
+                    prenotazione.DataPrenotazione = Convert.ToDateTime(reader["DataPrenotazione"]);
+
+                    prenotazione.Cliente = clienti;
+                    prenotazione.Soggiorno = soggiorno;
+
+
+
+                    Prenotazione.listaPrenotazioni.Add(prenotazione);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            con.Close();
+
+
+            return Json(Prenotazione.listaPrenotazioni, JsonRequestBehavior.AllowGet);
         }
     }
 }
